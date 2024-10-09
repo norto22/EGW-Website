@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earhart - Exclusive Game World</title>
+    <link rel="stylesheet" href="{% static 'css/main_page.css' %}">
+
+    <!-- CSS for the modal -->
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(60, 40, 20, 0.7); /* Match color scheme */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fdf5e6; /* Light beige background */
+            margin: 10% auto;
+            padding: 20px;
+            border: 2px solid #8b4513; /* Dark brown border */
+            width: 50%;
+            max-height: 70%;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Adding shadow */
+        }
+
+        .modal-content h3 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #8b4513; /* Dark brown text */
+        }
+
+        .close {
+            color: #8b4513;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover, .close:focus {
+            color: black;
+            cursor: pointer;
+        }
+
+        /* Subsidiary Table Styling */
+        .subsidiary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .subsidiary-table th, .subsidiary-table td {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .subsidiary-table th {
+            background-color: #d2b48c; /* Light brown header */
+            color: #8b4513; /* Dark brown text */
+        }
+
+        .subsidiary-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .subsidiary-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .subsidiary-table td {
+            color: #555; /* Slightly darker text for table content */
+        }
+
+        .no-subsidiaries {
+            text-align: center;
+            color: #888;
+            font-size: 16px;
+        }
+    </style>
+
+    <script>
+        function openModal(playerId) {
+            var modal = document.getElementById("modal-" + playerId);
+            modal.style.display = "block";
+        }
+
+        function closeModal(playerId) {
+            var modal = document.getElementById("modal-" + playerId);
+            modal.style.display = "none";
+        }
+
+        function openSubsidiaryModal(airlineId) {
+            var modal = document.getElementById("subsidiary-modal-" + airlineId);
+            modal.style.display = "block";
+        }
+
+        function closeSubsidiaryModal(airlineId) {
+            var modal = document.getElementById("subsidiary-modal-" + airlineId);
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            var modals = document.getElementsByClassName("modal");
+            for (var i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <img src="{% static 'images/logo.png' %}" alt="Earhart Logo" id="logo">
+        <h1>Earhart - Exclusive Game World</h1>
+    </header>
+
+    <main>
+        <h2>Active Players and Airlines</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Discord Username</th>
+                    <th>AirlineSim Username</th>
+                    <th>Date Joined</th>
+                    <th>Airlines</th>
+                    <th>Main Hub</th>
+                    <th>Balance</th>
+                    <th>Amount Owed</th>
+                    <th>Notes</th>
+                    <th>Payments</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                    <tr>
+                        <td>{{ player.discord_username }}</td>
+                        <td>{{ player.airlinesim_username }}</td>
+                        <td>{{ player.joined_date }}</td>
+                        <td>
+                            {% for airline in player.airline_set.all %}
+                                <div class="airline-container">
+                                    <div class="airline-name">{{ airline.name }}</div>
+                                    <div class="subsidiary-button-container">
+                                        <button onclick="openSubsidiaryModal({{ airline.id }})">Subsidiaries</button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for airline in player.airline_set.all %}
+                                {{ airline.hub }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>€{{ player.balance }}</td>
+                        <td>€{{ player.amount_owed }}</td>
+                        <td>{{ player.notes }}</td>
+
+                        <!-- Payments Column with Button -->
+                        <td style="text-align:center;">
+                            <button onclick="openModal({{ player.id }})">
+                                Show Payments
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Modals for each player's transactions -->
+    {% for player in players %}
+        <div id="modal-{{ player.id }}" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal({{ player.id }})">&times;</span>
+                <h3>Transactions for {{ player.discord_username }}</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Payment Date</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in player.transaction_set.all %}
+                            <tr>
+                                <td>{{ transaction.payment_date }}</td>
+                                <td>
+                                    {% if transaction.transaction_type == 'credit' %}
+                                        +€{{ transaction.amount }}
+                                    {% else %}
+                                        -€{{ transaction.amount }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ transaction.transaction_type|capfirst }}</td>
+                                <td>{{ transaction.description }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">No transactions available</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+
+    <!-- Modals for each airline's subsidiaries -->
+    {% for player in players %}
+        {% for airline in player.airline_set.all %}
+            <div id="subsidiary-modal-{{ airline.id }}" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeSubsidiaryModal({{ airline.id }})">&times;</span>
+                    <h3>Subsidiaries for {{ airline.name }}</h3>
+                    
+                    <table class="subsidiary-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Hub</th>
+                                <th>Date Formed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if airline.subsidiary_set.all %}
+                                {% for sub in airline.subsidiary_set.all %}
+                                    <tr>
+                                        <td>{{ sub.name }}</td>
+                                        <td>{{ sub.hub }}</td>
+                                        <td>{{ sub.date_formed }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="3" class="no-subsidiaries">No subsidiaries available</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <footer>
+        <p>&copy; 2024 Earhart Exclusive Game World</p>
+    </footer>
+</body>
+</html>
