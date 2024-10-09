@@ -1,0 +1,148 @@
+@font-face {
+    font-family: 'Aptos';
+    src: url('../fonts/Aptos.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Aptos', Arial, sans-serif;  /* Use Aptos, with Arial and sans-serif as fallback */
+    background-color: #f5f5dc;  /* Beige background */
+    color: #4b2e24;  /* Dark brown text */
+}
+
+header {
+    background-color: #d2b48c;  /* Light brown background */
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    color: #4b2e24;  /* Dark brown text */
+    font-family: 'Aptos', Arial, sans-serif;  /* Ensure headers use Aptos */
+}
+
+h2 {
+    color: #4b2e24;  /* Dark brown text */
+    font-family: 'Aptos', Arial, sans-serif;  /* Ensure headers use Aptos */
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #4b2e24;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #d2b48c;
+}
+
+footer {
+    background-color: #d2b48c;
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+button {
+    background-color: #4b2e24;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #d2b48c;
+}
+
+/* Modal Styling */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(60, 40, 20, 0.7); /* Updated to match the color scheme */
+}
+
+.modal-content {
+    background-color: #fdf5e6; /* Light brown/beige color */
+    margin: 10% auto;
+    padding: 20px;
+    border: 2px solid #8b4513; /* Dark brown border */
+    width: 50%;
+    max-height: 70%;
+    overflow-y: auto;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Adding shadow */
+}
+
+.modal-content h3 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #8b4513; /* Dark brown */
+}
+
+.close {
+    color: #8b4513;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus {
+    color: black;
+    cursor: pointer;
+}
+
+/* Subsidiary Table Styling */
+.subsidiary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.subsidiary-table th, .subsidiary-table td {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.subsidiary-table th {
+    background-color: #d2b48c;
+    color: #8b4513; /* Dark brown */
+}
+
+.subsidiary-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.subsidiary-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.subsidiary-table td {
+    color: #555;
+}
+
+.no-subsidiaries {
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+}
